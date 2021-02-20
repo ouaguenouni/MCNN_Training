@@ -47,6 +47,8 @@ def predict(input_line, n_predictions=3):
     print('\n> %s' % input_line)
     with torch.no_grad():
         output = evaluate(lineToTensor(input_line))
+        m = nn.Softmax(dim=1)        
+        output = m(output)
 
         # Get top N categories
         topv, topi = output.topk(n_predictions, 1, True)
@@ -59,14 +61,17 @@ def predict(input_line, n_predictions=3):
             predictions.append([value, all_categories[category_index]])
     return predictions
 
-import flask
-
-app = flask.Flask(__name__)
-app.config["DEBUG"] = True
 
 
-@app.route('/', methods=['GET'])
-def home():
-    return "<h1>Distant Reading Archive</h1><p>This site is a prototype API for distant reading of science fiction novels.</p>"
+import argparse
 
-app.run()
+parser = argparse.ArgumentParser()
+
+parser.add_argument("name", help="name", type=str)
+
+if(__name__ == "__main__"):
+    args = parser.parse_args()
+
+    predict(args.name,3)
+
+    pass

@@ -71,26 +71,28 @@ def train(rnn, category_tensor, line_tensor, learning_rate = 0.005):
 
 
 import argparse
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--lr", help="learning rate",default=0.005, type=float)
 parser.add_argument("--hidden", help="hidden states", default = 128, type=int)
-parser.add_argument("--n_iters", help="number of iterations", default= 100000,type=float)
+parser.add_argument("--n_iters", help="number of iterations", default= 100000,type=int)
 parser.add_argument("--output", help="path where you want to save the resulting network",type=str)
 
 
 if(__name__ == "__main__"):
 
     writer = SummaryWriter()
+
     args = parser.parse_args()
 
     n_iters = args.n_iters
     print_every = n_iters // 10
-    plot_every = n_iters // 10
+    plot_every = n_iters // 10000
+
     n_hidden = args.hidden
     learning_rate = args.lr
 
-    print("output : ", args.output)
 
     current_loss = 0
 
@@ -109,6 +111,8 @@ if(__name__ == "__main__"):
             print('%d %d%% (%s) %.4f %s / %s %s' % (iter, iter / n_iters * 100, timeSince(start), loss, line, guess, correct))
 
         if iter % plot_every == 0:
+
+
             if(args.output != None):
                 torch.save(rnn.state_dict(), "./" + str(args.output))
 
